@@ -63,7 +63,7 @@ void Splash() {
   print("                 C L I S M S");
   print("Command Line Interface School Management System");
   print("");
-  print("                     v0.1                      ");
+  print("                     v0.2                      ");
   print("       Matthew Lawrence Marcelo / CS222        ");
   print("       No LLM/AI was used in this work.        ");
   print("===============================================");
@@ -207,67 +207,175 @@ void EnrollSubject() {
   while (true) {
     clear();
     TitleBar("Enroll Subject");
-    stdout.write("Student ID: "); // code to search ID
-    int? searchTerm = int.parse(stdin.readLineSync()!);
-    print("");
-    bool somethingFound = false;
-    for (int i = 0; i < studentDB.length; i++) {
-      var selectedStudent = studentDB.elementAt(i);
-      if (selectedStudent.IDno == searchTerm) {
-        if (!somethingFound) {
-          StudentTableHeader();
-          somethingFound = true;
-        }
-        print(
-          '${selectedStudent.IDno}\t|${selectedStudent.yrlvl}\t|${selectedStudent.grade == -1 ? "N/A" : selectedStudent.grade}\t|${selectedStudent.name}\t',
-        );
-        // code for subject input
-        stdout.write("Subject Code: ");
-        String subjectCode = stdin.readLineSync()!;
-        stdout.write("Subject Section: ");
-        int? subjectSection = int.parse(stdin.readLineSync()!);
-        stdout.write("Subject Name: ");
-        String subjectName = stdin.readLineSync()!;
-        // code for adding subject to ID
-        Map<String, dynamic> subjectDetails = {
-          'code': subjectCode,
-          'section': subjectSection,
-          'grade': -1.0,
-          'name': subjectName,
-        };
-        studentDB.elementAt(i).subjects.add(subjectDetails);
-        clear();
-        TitleBar("Enroll Subject > Successful");
-        print("Subject successfully added to ${studentDB.elementAt(i).IDno}");
-        print("Subjects:");
-        SubjectTableHeader();
-        //print(studentDB.elementAt(i).subjects);
-        for (int k = 0; k < studentDB.elementAt(i).subjects.length; k++) {
-          var selectedSubject = studentDB.elementAt(i).subjects[k];
+    try {
+      stdout.write("Student ID: "); // code to search ID
+      int? searchTerm = int.parse(stdin.readLineSync()!); // get search term
+      print("");
+      bool somethingFound = false;
+      for (int i = 0; i < studentDB.length; i++) {
+        // iterate through all students
+        var selectedStudent = studentDB.elementAt(i);
+        if (selectedStudent.IDno == searchTerm) {
+          if (!somethingFound) {
+            StudentTableHeader();
+            somethingFound = true;
+          }
           print(
-            '${selectedSubject['code']}\t|${selectedSubject['section']}\t|${selectedSubject['grade'] == -1 ? "N/A" : selectedSubject['grade']}\t|${selectedSubject['name']}',
+            '${selectedStudent.IDno}\t|${selectedStudent.yrlvl}\t|${selectedStudent.grade == -1 ? "N/A" : selectedStudent.grade}\t|${selectedStudent.name}\t',
           );
+          // code for subject input
+          stdout.write("Subject Code: ");
+          String subjectCode = stdin.readLineSync()!;
+          stdout.write("Subject Section: ");
+          int? subjectSection = int.parse(stdin.readLineSync()!);
+          stdout.write("Subject Name: ");
+          String subjectName = stdin.readLineSync()!;
+          // code for adding subject to ID
+          Map<String, dynamic> subjectDetails = {
+            'code': subjectCode,
+            'section': subjectSection,
+            'grade': -1.0,
+            'name': subjectName,
+          };
+          studentDB.elementAt(i).subjects.add(subjectDetails);
+          clear();
+          TitleBar("Enroll Subject > Successful");
+          print("Subject successfully added to ${studentDB.elementAt(i).IDno}");
+          print("Subjects:");
+          SubjectTableHeader();
+          //print(studentDB.elementAt(i).subjects);
+          for (int k = 0; k < studentDB.elementAt(i).subjects.length; k++) {
+            var selectedSubject = studentDB.elementAt(i).subjects[k];
+            print(
+              '${selectedSubject['code']}\t|${selectedSubject['section']}\t|${selectedSubject['grade'] == -1 ? "N/A" : selectedSubject['grade']}\t|${selectedSubject['name']}',
+            );
+          }
+          break;
         }
-        break;
       }
-    }
-    if (!somethingFound) {
-      print("No student found with the search term.");
-    }
-    print("\n[ENTER] Add New Subject");
-    print("[0] Exit");
-    String menuInput = stdin.readLineSync()!;
-    if (menuInput.isEmpty) {
-      menuInput = "1";
-    }
-    int? menuSelection = int.parse(menuInput); // Request input
-    if (menuSelection == 0) {
-      break; // Code to exit program
+      if (!somethingFound) {
+        print("No student found with the search term.");
+      }
+      print("\n[ENTER] Add New Subject");
+      print("[0] Exit");
+      String menuInput = stdin.readLineSync()!;
+      if (menuInput.isEmpty) {
+        menuInput = "1";
+      }
+      int? menuSelection = int.parse(menuInput); // Request input
+      if (menuSelection == 0) {
+        break; // Code to exit program
+      }
+    } catch (e) {
+      error(e);
     }
   }
 }
 
-void ModifyGrade() {}
+void ModifyGrade() {
+  while (true) {
+    clear();
+    TitleBar("Add / Update Grade > Select");
+    try {
+      stdout.write("Student ID: "); // code to search ID
+      int? searchTerm = int.parse(stdin.readLineSync()!); // get search term
+      print("");
+      bool studentFound = false;
+      for (int i = 0; i < studentDB.length; i++) {
+        // iterate through all students
+        var selectedStudent = studentDB.elementAt(i);
+        if (selectedStudent.IDno == searchTerm) {
+          if (!studentFound) {
+            StudentTableHeader();
+            studentFound = true;
+          }
+          print(
+            // list matched student's info
+            '${selectedStudent.IDno}\t|${selectedStudent.yrlvl}\t|${selectedStudent.grade == -1 ? "N/A" : selectedStudent.grade}\t|${selectedStudent.name}\t\n',
+          );
+          SubjectTableHeader(); //list all subjects
+          for (int k = 0; k < selectedStudent.subjects.length; k++) {
+            var selectedSubject = selectedStudent.subjects[k];
+            print(
+              '${selectedSubject['code']}\t|${selectedSubject['section']}\t|${selectedSubject['grade'] == -1 ? "N/A" : selectedSubject['grade']}\t|${selectedSubject['name']}',
+            );
+          }
+          // code for subject input
+          stdout.write("Subject Code: ");
+          String subjectCode = stdin.readLineSync()!;
+          bool subjectFound = false;
+          for (int k = 0; k < selectedStudent.subjects.length; k++) {
+            // iterate through all subjects
+            var selectedSubject = selectedStudent.subjects[k];
+            if (selectedSubject['code'].toLowerCase() ==
+                subjectCode.toLowerCase()) {
+              if (!subjectFound) {
+                subjectFound = true;
+              }
+              clear();
+              TitleBar("Add / Update Grade > Modify Grade");
+              print("SELECTED SUBJECT");
+              SubjectTableHeader(); // display selected subject
+              print(
+                '${selectedSubject['code']}\t|${selectedSubject['section']}\t|${selectedSubject['grade'] == -1 ? "N/A" : selectedSubject['grade']}\t|${selectedSubject['name']}',
+              );
+              stdout.write("Subject Grade: "); // input grade
+              double? subjectGrade = double.parse(stdin.readLineSync()!);
+              studentDB.elementAt(i).subjects[k]['grade'] =
+                  subjectGrade; // add new grade to subject
+              clear();
+              TitleBar("Add / Update Grade > Successful");
+              print(
+                "Grade successfully added to ${studentDB.elementAt(i).IDno}",
+              );
+              print("Subjects:");
+              SubjectTableHeader();
+              double gradeTotal = 0.0;
+              int validSubjects = 0;
+              for (int k = 0; k < studentDB.elementAt(i).subjects.length; k++) {
+                var selectedSubject = studentDB.elementAt(i).subjects[k];
+                if (selectedSubject['grade'] >= 0) {
+                  gradeTotal += selectedSubject['grade'];
+                  validSubjects++;
+                }
+                print(
+                  '${selectedSubject['code']}\t|${selectedSubject['section']}\t|${selectedSubject['grade'] == -1 ? "N/A" : selectedSubject['grade']}\t|${selectedSubject['name']}',
+                );
+              }
+              studentDB.elementAt(i).grade = (gradeTotal / validSubjects);
+              print("\nTotal student grade calculated.");
+              StudentTableHeader();
+              print(
+                // list matched student's info
+                '${selectedStudent.IDno}\t|${selectedStudent.yrlvl}\t|${selectedStudent.grade == -1 ? "N/A" : selectedStudent.grade}\t|${selectedStudent.name}\t\n',
+              );
+              break;
+            }
+          }
+          if (!subjectFound) {
+            print("No subject found with the search term.");
+          }
+          break;
+        }
+      }
+      if (!studentFound) {
+        print("No student found with the search term.");
+      }
+      print("\n[ENTER] Add New Subject");
+      print("[0] Exit");
+      String menuInput = stdin.readLineSync()!;
+      if (menuInput.isEmpty) {
+        menuInput = "1";
+      }
+      int? menuSelection = int.parse(menuInput); // Request input
+      if (menuSelection == 0) {
+        break; // Code to exit program
+      }
+    } catch (e) {
+      error(e);
+    }
+  }
+}
 
 // MAIN FUNCTION
 void main() {
@@ -299,7 +407,7 @@ void main() {
           EnrollSubject();
           break;
         case 5:
-          PlaceHolder();
+          ModifyGrade();
           break;
         case 6:
           PlaceHolder();
