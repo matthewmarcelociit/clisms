@@ -65,7 +65,7 @@ void Splash() {
   print("                 C L I S M S");
   print("Command Line Interface School Management System");
   print("");
-  print("                     v0.2                      ");
+  print("                     v0.3                      ");
   print("       Matthew Lawrence Marcelo / CS222        ");
   print("       No LLM/AI was used in this work.        ");
   print("===============================================");
