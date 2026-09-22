@@ -26,16 +26,18 @@ void error(e) {
 
 // VARIABLES AND CLASSES
 class Student {
+  // student object
   int IDno;
   String name;
   int yrlvl;
   double grade = -1;
   List<Map> subjects = [];
-  Student(this.IDno, this.yrlvl, this.grade, this.name);
+  Student(this.IDno, this.yrlvl, this.grade, this.name); // student constructor
 }
 
 Set<Student> studentDB = {
-  Student(26001, 2, -1, 'Test Person'),
+  // student store
+  Student(26001, 2, -1, 'Test Person'), // presets
   Student(26002, 4, -1, 'Matthew Marcelo'),
 };
 
@@ -376,6 +378,42 @@ void ModifyGrade() {
     }
   }
 }
+
+void StudentReport() {
+  clear();
+  TitleBar("View Student Report");
+  try {
+    stdout.write("Student ID: "); // code to search ID
+    int? searchTerm = int.parse(stdin.readLineSync()!); // get search term
+    print("");
+    bool studentFound = false;
+    for (int i = 0; i < studentDB.length; i++) {
+      // iterate through all students
+      var selectedStudent = studentDB.elementAt(i);
+      if (selectedStudent.IDno == searchTerm) {
+        if (!studentFound) {
+          StudentTableHeader();
+          studentFound = true;
+        }
+        print(
+          // list matched student's info
+          '${selectedStudent.IDno}\t|${selectedStudent.yrlvl}\t|${selectedStudent.grade == -1 ? "N/A" : selectedStudent.grade}\t|${selectedStudent.name}\t\n',
+        );
+        SubjectTableHeader(); //list all subjects
+        for (int k = 0; k < selectedStudent.subjects.length; k++) {
+          var selectedSubject = selectedStudent.subjects[k];
+          print(
+            '${selectedSubject['code']}\t|${selectedSubject['section']}\t|${selectedSubject['grade'] == -1 ? "N/A" : selectedSubject['grade']}\t|${selectedSubject['name']}',
+          );
+        }
+      }
+    }
+  } catch (e) {
+    error(e);
+  }
+}
+
+void RemoveStudent() {}
 
 // MAIN FUNCTION
 void main() {
