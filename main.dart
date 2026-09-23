@@ -65,7 +65,7 @@ void Splash() {
   print("                 C L I S M S");
   print("Command Line Interface School Management System");
   print("");
-  print("                     v0.3                      ");
+  print("                     v0.4                      ");
   print("       Matthew Lawrence Marcelo / CS222        ");
   print("       No LLM/AI was used in this work.        ");
   print("===============================================");
@@ -245,7 +245,6 @@ void EnrollSubject() {
           print("Subject successfully added to ${studentDB.elementAt(i).IDno}");
           print("Subjects:");
           SubjectTableHeader();
-          //print(studentDB.elementAt(i).subjects);
           for (int k = 0; k < studentDB.elementAt(i).subjects.length; k++) {
             var selectedSubject = studentDB.elementAt(i).subjects[k];
             print(
@@ -406,6 +405,20 @@ void StudentReport() {
             '${selectedSubject['code']}\t|${selectedSubject['section']}\t|${selectedSubject['grade'] == -1 ? "N/A" : selectedSubject['grade']}\t|${selectedSubject['name']}',
           );
         }
+        break;
+      }
+      if (!studentFound) {
+        print("No student found with the search term.");
+      }
+      print("\n[ENTER] New Report");
+      print("[0] Exit");
+      String menuInput = stdin.readLineSync()!;
+      if (menuInput.isEmpty) {
+        menuInput = "1";
+      }
+      int? menuSelection = int.parse(menuInput); // Request input
+      if (menuSelection == 0) {
+        break; // Code to exit program
       }
     }
   } catch (e) {
@@ -413,7 +426,10 @@ void StudentReport() {
   }
 }
 
-void RemoveStudent() {}
+void RemoveStudent() {
+  clear();
+  TitleBar("Remove Student");
+}
 
 // MAIN FUNCTION
 void main() {
@@ -448,7 +464,7 @@ void main() {
           ModifyGrade();
           break;
         case 6:
-          PlaceHolder();
+          StudentReport();
           break;
         case 7:
           PlaceHolder();
