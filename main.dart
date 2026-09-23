@@ -113,25 +113,37 @@ void RegisterStudent() {
   while (true) {
     clear();
     TitleBar("Register Student");
-    print("NEW STUDENT\n");
-    stdout.write("ID Number: ");
-    int newStudentIDno = int.parse(stdin.readLineSync()!);
-    stdout.write("Year Level: ");
-    int newStudentYrLvl = int.parse(stdin.readLineSync()!);
-    stdout.write("Name: ");
-    String newStudentName = stdin.readLineSync()!;
     try {
-      studentDB.add(
-        Student(newStudentIDno, newStudentYrLvl, -1, newStudentName),
-      );
-      clear();
-      print("===============================================");
-      print(" CLISMS > Register Student");
-      print("===============================================");
-      print("Successfully added student.\n");
-      print("ID Number: $newStudentIDno");
-      print("Year Level: $newStudentYrLvl");
-      print("Name: $newStudentName");
+      print("NEW STUDENT\n");
+      bool studentFound = false;
+      stdout.write("ID Number: ");
+      int newStudentIDno = int.parse(stdin.readLineSync()!);
+      //existing ID check
+      for (int i = 0; i < studentDB.length; i++) {
+        var selectedStudent = studentDB.elementAt(i);
+        if (selectedStudent.IDno == newStudentIDno) {
+          studentFound = true;
+          break;
+        }
+      }
+      if (studentFound) {
+        print("Student ID $newStudentIDno already exists.");
+      } else {
+        stdout.write("Year Level: ");
+        int newStudentYrLvl = int.parse(stdin.readLineSync()!);
+        stdout.write("Name: ");
+        String newStudentName = stdin.readLineSync()!;
+        studentDB.add(
+          Student(newStudentIDno, newStudentYrLvl, -1, newStudentName),
+        );
+        clear();
+        TitleBar("Register Student > Successful");
+        print("Successfully added student.\n");
+        print("ID Number: $newStudentIDno");
+        print("Year Level: $newStudentYrLvl");
+        print("Name: $newStudentName");
+      }
+
       print("\n[ENTER] New Student");
       print("[0] Exit");
       String menuInput = stdin.readLineSync()!;
@@ -379,33 +391,36 @@ void ModifyGrade() {
 }
 
 void StudentReport() {
-  clear();
-  TitleBar("View Student Report");
-  try {
-    stdout.write("Student ID: "); // code to search ID
-    int? searchTerm = int.parse(stdin.readLineSync()!); // get search term
-    print("");
-    bool studentFound = false;
-    for (int i = 0; i < studentDB.length; i++) {
-      // iterate through all students
-      var selectedStudent = studentDB.elementAt(i);
-      if (selectedStudent.IDno == searchTerm) {
-        if (!studentFound) {
-          StudentTableHeader();
-          studentFound = true;
-        }
-        print(
-          // list matched student's info
-          '${selectedStudent.IDno}\t|${selectedStudent.yrlvl}\t|${selectedStudent.grade == -1 ? "N/A" : selectedStudent.grade}\t|${selectedStudent.name}\t\n',
-        );
-        SubjectTableHeader(); //list all subjects
-        for (int k = 0; k < selectedStudent.subjects.length; k++) {
-          var selectedSubject = selectedStudent.subjects[k];
+  while (true) {
+    clear();
+    TitleBar("View Student Report");
+    try {
+      stdout.write("Student ID: "); // code to search ID
+      int? searchTerm = int.parse(stdin.readLineSync()!); // get search term
+      print("");
+      bool studentFound = false;
+      for (int i = 0; i < studentDB.length; i++) {
+        // iterate through all students
+        var selectedStudent = studentDB.elementAt(i);
+        if (selectedStudent.IDno == searchTerm) {
+          if (!studentFound) {
+            StudentTableHeader();
+            studentFound = true;
+          }
           print(
-            '${selectedSubject['code']}\t|${selectedSubject['section']}\t|${selectedSubject['grade'] == -1 ? "N/A" : selectedSubject['grade']}\t|${selectedSubject['name']}',
+            // list matched student's info
+            '${selectedStudent.IDno}\t|${selectedStudent.yrlvl}\t|${selectedStudent.grade == -1 ? "N/A" : selectedStudent.grade}\t|${selectedStudent.name}\t\n',
           );
+          print("Subjects:");
+          SubjectTableHeader(); //list all subjects
+          for (int k = 0; k < selectedStudent.subjects.length; k++) {
+            var selectedSubject = selectedStudent.subjects[k];
+            print(
+              '${selectedSubject['code']}\t|${selectedSubject['section']}\t|${selectedSubject['grade'] == -1 ? "N/A" : selectedSubject['grade']}\t|${selectedSubject['name']}',
+            );
+          }
+          break;
         }
-        break;
       }
       if (!studentFound) {
         print("No student found with the search term.");
@@ -420,15 +435,73 @@ void StudentReport() {
       if (menuSelection == 0) {
         break; // Code to exit program
       }
+    } catch (e) {
+      error(e);
     }
-  } catch (e) {
-    error(e);
   }
 }
 
 void RemoveStudent() {
-  clear();
-  TitleBar("Remove Student");
+  while (true) {
+    clear();
+    TitleBar("Remove Student");
+    try {
+      stdout.write("Student ID: "); // code to search ID
+      int? searchTerm = int.parse(stdin.readLineSync()!); // get search term
+      print("");
+      bool studentFound = false;
+      for (int i = 0; i < studentDB.length; i++) {
+        // iterate through all students
+        var selectedStudent = studentDB.elementAt(i);
+        if (selectedStudent.IDno == searchTerm) {
+          if (!studentFound) {
+            StudentTableHeader();
+            studentFound = true;
+          }
+          print(
+            // list matched student's info
+            '${selectedStudent.IDno}\t|${selectedStudent.yrlvl}\t|${selectedStudent.grade == -1 ? "N/A" : selectedStudent.grade}\t|${selectedStudent.name}\t\n',
+          );
+          stdout.write(
+            "Are you sure you want to remove this student\nand all of their data from the database? (y/N): ",
+          );
+          String confirm = stdin.readLineSync()!;
+          confirm = confirm.toLowerCase();
+          if (confirm.isEmpty) {
+            confirm = "n";
+          }
+          if (confirm == "y") {
+            studentDB.remove(studentDB.elementAt(i));
+            clear();
+            TitleBar("Remove Student > Successful");
+            print(
+              "Student with ID ${selectedStudent.IDno} was removed from the database.",
+            );
+          } else {
+            clear();
+            TitleBar("Remove Student > Cancelled");
+            print("Removal cancelled.");
+          }
+          break; // stop searching for more students
+        }
+      }
+      if (!studentFound) {
+        print("No student found with the search term.");
+      }
+      print("\n[ENTER] Remove Another Student");
+      print("[0] Exit");
+      String menuInput = stdin.readLineSync()!;
+      if (menuInput.isEmpty) {
+        menuInput = "1";
+      }
+      int? menuSelection = int.parse(menuInput); // Request input
+      if (menuSelection == 0) {
+        break; // Code to exit program
+      }
+    } catch (e) {
+      error(e);
+    }
+  }
 }
 
 // MAIN FUNCTION
@@ -467,7 +540,7 @@ void main() {
           StudentReport();
           break;
         case 7:
-          PlaceHolder();
+          RemoveStudent();
           break;
         default:
           break;
