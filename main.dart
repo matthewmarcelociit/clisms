@@ -32,14 +32,22 @@ class Student {
   int yrlvl;
   double grade = -1;
   List<Map> subjects = [];
-  Student(this.IDno, this.yrlvl, this.grade, this.name); // student constructor
+  Student(this.IDno, this.yrlvl, this.name); // student constructor
 }
 
 Set<Student> studentDB = {
   // student store
-  Student(26001, 2, -1, 'Test Person'), // presets
-  Student(26002, 4, -1, 'Matthew Marcelo'),
+  Student(26001, 2, 'Test Person'), // presets
+  Student(26002, 4, 'Matthew Marcelo'),
 };
+
+// FUTURE
+// Future<Set<Student>> loadDB() async {
+//   await networking code
+//   return set from server;
+// }
+
+// Set<Student> studentDB = loadDB();
 
 // TEXT PRESETS
 void TitleBar(text) {
@@ -65,7 +73,7 @@ void Splash() {
   print("                 C L I S M S");
   print("Command Line Interface School Management System");
   print("");
-  print("                     v0.4                      ");
+  print("                     v1.1                      ");
   print("       Matthew Lawrence Marcelo / CS222        ");
   print("       No LLM/AI was used in this work.        ");
   print("===============================================");
@@ -133,9 +141,7 @@ void RegisterStudent() {
         int newStudentYrLvl = int.parse(stdin.readLineSync()!);
         stdout.write("Name: ");
         String newStudentName = stdin.readLineSync()!;
-        studentDB.add(
-          Student(newStudentIDno, newStudentYrLvl, -1, newStudentName),
-        );
+        studentDB.add(Student(newStudentIDno, newStudentYrLvl, newStudentName));
         clear();
         TitleBar("Register Student > Successful");
         print("Successfully added student.\n");
